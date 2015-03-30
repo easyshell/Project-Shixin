@@ -7,7 +7,7 @@ import redis
 
 
 from scrapy import signals
-
+from scrapy.contrib.exporter import CsvItemExporter
 
 import json
 import codecs
@@ -48,3 +48,34 @@ class RedisPipeline(object):
 
     def spider_closed(self, spider):
         return
+
+
+
+class CSVPipeline(object):
+
+  def __init__(self):
+    self.files = {}
+
+  @classmethod
+  def from_crawler(cls, crawler):
+    pipeline = cls()
+    crawler.signals.connect(pipeline.spider_opened, signals.spider_opened)
+    crawler.signals.connect(pipeline.spider_closed, signals.spider_closed)
+    return pipeline
+
+  def spider_opened(self, spider):
+    file = open('%s_items.csv' % spider.name, 'w+b')
+    self.files[spider] = file
+    self.exporter = CsvItemExporter(file)
+    #need to be modified all the time
+    self.exporter.fields_to_export = ["id", "iname","caseCode","age","sexy","cardNum","courtName","areaName","partyTypeName","gistId","regDate","gistUnit","duty","performance","performedPart","unperformPart","disruptTypeName","publishDate"]
+    self.exporter.start_exporting()
+
+  def spider_closed(self, spider):
+    self.exporter.finish_exporting()
+    file = self.files.pop(spider)
+    file.close()
+
+  def process_item(self, item, spider):
+    self.exporter.export_item(item)
+    return item

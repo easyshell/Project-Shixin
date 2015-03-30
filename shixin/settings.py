@@ -5,6 +5,7 @@
 #
 #     http://doc.scrapy.org/en/latest/topics/settings.html
 #
+# -*-coding:utf-8-*-
 
 import sys
 import os
@@ -21,16 +22,20 @@ NEWSPIDER_MODULE = 'shixin.spiders'
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'shixin (+http://www.yourdomain.com)'
 
+#use new useragent
 DOWNLOADER_MIDDLEWARES = {
-   # 'misc.middleware.CustomHttpProxyMiddleware': 400,
-    'misc.middleware.CustomUserAgentMiddleware': 401,
-}
+        'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware' : None,
+        'shixin.spiders.rotate_useragent.RotateUserAgentMiddleware' :400
+    }
 
 ITEM_PIPELINES = {
-    'shixin.pipelines.JsonWithEncodingPipeline': 300,
+    #'shixin.pipelines.JsonWithEncodingPipeline': 300,
     #'shixin.pipelines.RedisPipeline': 301,
+    'shixin.pipelines.CSVPipeline': 300
 }
+
+COOKIES_ENABLES=False
 
 LOG_LEVEL = 'INFO'
 
-DOWNLOAD_DELAY = 1
+DOWNLOAD_DELAY = 0
