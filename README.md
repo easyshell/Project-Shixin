@@ -7,4 +7,4 @@ I use selector to choose the id from start_url and process it to yield Request.
 
 Build a csvPipeLine to output a csv type result.
 
-In order to speed up the download and avoid the potential ban policy, I use random user-agents.
+In order to speed up the download and avoid the potential ban policy, I use random user-agents and forbiden the using of cookies.
